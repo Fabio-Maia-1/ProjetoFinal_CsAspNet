@@ -1,0 +1,41 @@
+﻿@{
+    ViewData["Title"] = "Registar Cliente";
+}
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin-bottom: 30px;
+        background: #fafafa;
+    }
+</style>
+
+<form>
+    <div class="registar-container">
+
+        <h2>Registar Novo Cliente</h2><br />
+
+        <div class="form-group">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" placeholder="Introduza o seu nome" />
+        </div>
+
+        <label class="warning">@ViewBag.Aviso</label>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Introduza o seu email" />
+        </div>
+
+        <br />
+        <div class="form-group">
+            <label for="password">Palavra-Passe:</label>
+            <input type="password" id="password" name="password" placeholder="Introduza a sua palavra-passe" />
+        </div>
+
+        <hr style="margin:25px 0;">
+
+        <button type="submit" class="btn btn-primary">Registar</button>
+        <a class="btn btn-danger" asp-area="" asp-controller="Login" asp-action="Index">Cancelar</a>
+
+    </div>
+</form>

@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "Iniciar Sessão";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        margin-bottom: 30px;
+        background: #fafafa;
+    }
+</style>
+
+<form>
+    <div class="login-container">
+
+        <h2>Iniciar Sessão</h2>
+
+        <br /><p style="font-weight:bold">@ViewBag.User</p><br />
+
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="Introduza o seu email" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Palavra-Passe:</label>
+            <input type="password" id="password" name="password" placeholder="Introduza a sua palavra-passe" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Entrar</button>
+
+        <hr style="margin:25px 0;">
+
+        <p>Ainda não tem conta?</p>
+        <a class="btn btn-secondary" asp-area="" asp-controller="Login" asp-action="Registar">Registar Nova Conta</a>
+
+    </div>
+</form>
