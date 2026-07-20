@@ -2,6 +2,33 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Olá, @ViewBag.Cliente</h1>
-</div>
+<style>
+    
+
+    
+</style>
+
+<form>
+
+    <div class="text-center">
+        <h1 class="display-4">@ViewBag.Cliente</h1>
+    </div>
+
+    <div class="filmes-container">
+
+        @foreach (var filme in ViewBag.Filmes)
+        {
+            <div class="filme-card">
+                <img src=@filme.PosterPath alt=@filme.Titulo>
+                <div class="filme-info">
+                    <h4 style="color:white">@filme.Titulo</h4>
+                    <p>Duração: @filme.Duracao min</p>
+                </div>
+                <a href="#" class="btn-comprar">Verificar Sessão</a>
+            </div>
+        }
+
+    </div>
+
+</form>
+

@@ -41,38 +41,58 @@ namespace ProjetoFinal.Controllers
             }
             else
             {
-                ViewBag.User = "Ocorreu um erro. Verifique o seu email e palvra-passe e tente outra vez.";
+                ViewBag.User = "Ocorreu um erro. Verifique o seu email e palavra-passe e tente outra vez.";
             }
 
             return View();
         }
 
-        public IActionResult Registar(string nome, string email, string password)
+        public IActionResult Registar(string nome, string email, string password, string password2)
         {
-            ViewBag.Aviso = null;
+            ViewBag.Aviso1 = null;
+            ViewBag.Aviso2 = null;
 
-            if (!string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(nome))
+            //Nenhum campo pode estar vazio
+            if (!string.IsNullOrEmpty(password) && !string.IsNullOrEmpty(password2) && !string.IsNullOrEmpty(email) && !string.IsNullOrEmpty(nome))
             {
+                //Verifica se já existe um utilizador com o mesmo email e que esteja ativo
                 var verificar = db.Utilizadors.Where(u => u.Email == email && u.Ativo == true).FirstOrDefault();
-
                 if (verificar == null)
                 {
-                    Utilizador user = new Utilizador();
-                    user.Nome = nome;
-                    user.Email = email;
-                    user.PasswordHash = password;
-                    user.TipoUtilizador = "cliente";
-                    user.Ativo = true;
+                    //Verifica se as palavras-passe são iguais
+                    if (password == password2)
+                    {
 
-                    db.Utilizadors.Add(user);
-                    db.SaveChanges();
+                        //Criar novo utilizador
+                        Utilizador user = new Utilizador();
+                        user.Nome = char.ToUpper(nome[0]) + nome.Substring(1); //Capitaliza a primeira letra do nome
+                        user.Email = email;
+                        user.PasswordHash = password;
+                        user.TipoUtilizador = "cliente";
+                        user.Ativo = true;
 
-                    return RedirectToAction("Index", "Login");
+                        db.Utilizadors.Add(user);
+                        db.SaveChanges();
+
+                        return RedirectToAction("Index", "Login");
+                    }
+                    else
+                    {
+                        ViewBag.Aviso2 = "As palavras-passe não são iguais.";
+                    }
                 }
                 else
                 {
-                    ViewBag.Aviso = "Já existe uma conta ativa associada a esse email.";
+                    ViewBag.Aviso1 = "Já existe uma conta ativa associada a esse email.";
+                    if (password != password2) { ViewBag.Aviso2 = "As palavras-passe não são iguais."; }
                 }
+            }
+            else
+            {
+                //Mostra erros simultaneamente caso se apliquem
+                if (password != password2) { ViewBag.Aviso2 = "As palavras-passe não são iguais."; }
+                var verificar = db.Utilizadors.Where(u => u.Email == email && u.Ativo == true).FirstOrDefault();
+                if (verificar != null) { ViewBag.Aviso1 = "Já existe uma conta ativa associada a esse email."; }
             }
             return View();
         }

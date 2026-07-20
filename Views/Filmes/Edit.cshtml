@@ -1,0 +1,61 @@
+@model ProjetoFinal.Models.Filme
+
+@{
+    ViewData["Title"] = "Edit Filme";
+}
+
+<h1>Edit Filme</h1>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="form-group">
+        <label asp-for="Titulo" class="control-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descricao" class="control-label"></label>
+        <textarea asp-for="Descricao" class="form-control"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Duracao" class="control-label"></label>
+        <input asp-for="Duracao" class="form-control" />
+        <span asp-validation-for="Duracao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genero" class="control-label"></label>
+        <select asp-for="Genero" class="form-control" asp-items="@Html.GetEnumSelectList<ProjetoFinal.Models.GenerosFilme>()"></select>
+        <span asp-validation-for="Genero" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClassificacaoEtaria" class="control-label"></label>
+        <select asp-for="ClassificacaoEtaria" class="form-control" asp-items="@Html.GetEnumSelectList<ProjetoFinal.Models.classificacoesEtariasFilme>()"></select>
+        <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="PosterPath" class="control-label"></label>
+        <input asp-for="PosterPath" class="form-control" />
+        <span asp-validation-for="PosterPath" class="text-danger"></span>
+    </div>
+
+    <div class="form-group form-check">
+        <input asp-for="Disponivel" class="form-check-input" />
+        <label asp-for="Disponivel" class="form-check-label"></label>
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

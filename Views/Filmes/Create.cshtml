@@ -1,0 +1,59 @@
+@model ProjetoFinal.Models.Filme
+
+@{
+    ViewData["Title"] = "Create Filme";
+}
+
+<h1>Criar Novo Filme</h1>
+<br />
+
+@* enctype="multipart/form-data" é obrigatório para upload de ficheiros. *@
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label asp-for="Titulo" class="control-label"></label>
+        <input asp-for="Titulo" class="form-control" />
+        <span asp-validation-for="Titulo" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Descricao" class="control-label"></label>
+        <textarea asp-for="Descricao" class="form-control"></textarea>
+        <span asp-validation-for="Descricao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Duracao" class="control-label"></label>
+        <input asp-for="Duracao" class="form-control" />
+        <span asp-validation-for="Duracao" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Genero" class="control-label"></label>
+        <select asp-for="Genero" class="form-control" asp-items="@Html.GetEnumSelectList<ProjetoFinal.Models.GenerosFilme>()"></select>
+        <span asp-validation-for="Genero" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ClassificacaoEtaria" class="control-label"></label>
+        <select asp-for="ClassificacaoEtaria" class="form-control" asp-items="@Html.GetEnumSelectList<ProjetoFinal.Models.classificacoesEtariasFilme>()"></select>
+        <span asp-validation-for="ClassificacaoEtaria" class="text-danger"></span>
+    </div>
+    
+    <div>
+        <label style="font-weight:bold">Poster</label><br />
+        <input type="file" name="Poster" />
+    </div>
+    <br />
+
+    <div class="form-group">
+        <input type="submit" value="Criar" class="btn btn-primary" /><br /><br />
+        <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+    </div>
+    <br />
+    <br />
+
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

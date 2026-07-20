@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using ProjetoFinal.Data;
 using ProjetoFinal.Models;
 using System.Diagnostics;
 
@@ -6,16 +7,26 @@ namespace ProjetoFinal.Controllers
 {
     public class HomeController : Controller
     {
+        ApplicationDbContext db;
+
+        public HomeController(ApplicationDbContext context)
+        {
+            db = context;
+        }
+
         public IActionResult Index()
         {
             if (HttpContext.Session.GetString("NOME") == null)
             {
-                ViewBag.Cliente = "Cliente";
+                ViewBag.Cliente = "Bem-Vindo";
             }
             else
             {
-                ViewBag.Cliente = HttpContext.Session.GetString("NOME");
+                ViewBag.Cliente = "Bem-Vindo, " + HttpContext.Session.GetString("NOME");
             }
+
+            //Coleção de filmes disponíveis para exibir na página inicial
+            ViewBag.Filmes = db.Filmes.Where(f => f.Disponivel == true).ToList();
 
             return View();
         }
