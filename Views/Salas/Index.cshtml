@@ -1,0 +1,39 @@
+@model IEnumerable<ProjetoFinal.Models.Sala>
+
+@{
+    ViewData["Title"] = "Salas";
+}
+
+<h1>Lista de Salas</h1>
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Nova Sala</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Nº Filas</th>
+            <th>Lugares Por Fila</th>
+            <th>Capacidade</th>
+            <th>Estado</th>
+            <th>Detalhes</th>
+            <th>Apagar</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Nome</td>
+            <td>@item.NumeroFilas</td>
+            <td>@item.LugaresPorFila</td>
+            <td>@item.Capacidade</td>
+            <td>@item.Estado</td>
+            <td><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a></td>
+            <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Apagar</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

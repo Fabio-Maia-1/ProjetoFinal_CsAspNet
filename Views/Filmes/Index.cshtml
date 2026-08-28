@@ -4,35 +4,44 @@
     ViewData["Title"] = "Filmes";
 }
 
-<h1>Filmes</h1>
+<h1>Lista de Filmes</h1>
+<br />
+
+
 
 <p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Novo Filme</a>
 </p>
+
+<div class="d-flex gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-secondary">Ver Todos</a>
+    <a asp-action="Index" asp-route-disponivel="true" class="btn btn-success">Ver Disponíveis</a>
+    <a asp-action="Index" asp-route-disponivel="false" class="btn btn-danger">Ver Indisponíveis</a>
+</div>
 
 <table class="table">
     <thead>
         <tr>
+            <th>Id</th>
             <th>Título</th>
             <th>Género</th>
             <th>Duração</th>
             <th>Disponível</th>
-            <th></th>
+            <th>Vêr Detalhes</th>
+            <th>Indisponibilizar</th>
         </tr>
     </thead>
     <tbody>
     @foreach (var item in Model)
     {
         <tr>
+            <td>@item.Id</td>
             <td>@item.Titulo</td>
             <td>@item.Genero</td>
             <td>@item.Duracao</td>
-            <td>@(item.Disponivel ? "Yes" : "No")</td>
-            <td>
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
+            <td>@(item.Disponivel ? "Sim" : "Não")</td>
+                <td><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a></td>
+                <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar </a></td>
         </tr>
     }
     </tbody>

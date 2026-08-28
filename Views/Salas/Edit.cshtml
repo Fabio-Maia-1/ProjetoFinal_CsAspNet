@@ -1,0 +1,101 @@
+@model ProjetoFinal.Models.Sala
+
+@{
+    ViewData["Title"] = "Editar Sala";
+}
+
+<h1>Editar Sala</h1>
+<br />
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="NumeroFilas" />
+    <input type="hidden" asp-for="LugaresPorFila" />
+
+    <dl class="row" style="text-align: center;font-weight: bold;">
+        <dd class="col-sm-4">Nº Filas: @Model.NumeroFilas</dd>
+        <dd class="col-sm-4">Lugares por Fila: @Model.LugaresPorFila</dd>
+        <dd class="col-sm-4">Capacidade: @Model.Capacidade</dd>
+    </dl>
+
+
+    <!-- Representação Gráfica da Sala
+        my-4: margem vertical de 4 unidades
+        p-3: padding de 3 unidades -->
+    <div class="card my-4 p-3 bg-light">
+
+        <!-- Layout dos Lugares -->
+        <div class="d-flex flex-column align-items-center gap-2 overflow-auto py-2">
+            @for (int fila = 1; fila <= Model.NumeroFilas; fila++)
+            {
+                // Converte número da fila em letra (1 = A, 2 = B, etc.)
+                char letraFila = (char)('A' + fila - 1);
+
+                <div class="d-flex align-items-center gap-2">
+                    <!-- Identificador da Fila-->
+                    <span class="fw-bold text-muted me-2" style="width: 20px;">@letraFila</span>
+
+                    <!-- Grelha de Lugares da Fila -->
+                    <div class="d-flex gap-1">
+                        @for (int lugar = 1; lugar <= Model.LugaresPorFila; lugar++)
+                        {
+                            // Define se adiciona um corredor (ex: após o lugar 5 numa sala de 10)
+                            // Podes ajustar o '5' conforme a largura pretendida
+                            if (Model.LugaresPorFila % 3 == 0 && Model.LugaresPorFila > 17)
+                            {
+                                bool tem2Corredores = (lugar == Model.LugaresPorFila / 3 || lugar == Model.LugaresPorFila / 3 + Model.LugaresPorFila / 3);
+
+                                <div class="d-flex align-items-center justify-content-center border border-secondary rounded bg-white @(tem2Corredores ? "me-4" : "")"
+                                     style="width: 48px; height: 48px;"
+                                     title="Fila @letraFila, Lugar @lugar">
+                                    @letraFila@lugar
+                                </div>
+                            }
+                            else if (Model.LugaresPorFila % 2 == 0 && Model.LugaresPorFila > 9)
+                            {
+                                bool temCorredor = (lugar == Model.LugaresPorFila / 2);
+
+                                <div class="d-flex align-items-center justify-content-center border border-secondary rounded bg-white @(temCorredor ? "me-4" : "")"
+                                     style="width: 48px; height: 48px;"
+                                     title="Fila @letraFila, Lugar @lugar">
+                                    @letraFila@lugar
+                                </div>
+                                }
+                            else
+                            {
+                                <div class="d-flex align-items-center justify-content-center border border-secondary rounded bg-white"
+                                     style="width: 48px; height: 48px;"
+                                     title="Fila @letraFila, Lugar @lugar">
+                                    @letraFila@lugar
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <div class="form-group">
+        <label asp-for="Nome" class="control-label"></label>
+        <input asp-for="Nome" class="form-control" />
+        <span asp-validation-for="Nome" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Estado" class="control-label"></label>
+        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList<ProjetoFinal.Models.EstadosSala>()"></select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+    <br />
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Guardar Aterações" class="btn btn-primary" /><br /><br />
+        <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

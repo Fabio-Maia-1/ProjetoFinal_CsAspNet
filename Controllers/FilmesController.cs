@@ -16,76 +16,135 @@ namespace ProjetoFinal.Controllers
         }
 
         // GET: Filmes
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(bool? disponivel)
         {
-            return View(await _context.Filmes.ToListAsync());
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null)
+            {
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    var filmes = _context.Filmes.OrderByDescending(f => f.Id).AsQueryable();
+
+                    if (disponivel.HasValue)
+                    {
+                        filmes = filmes.Where(f => f.Disponivel == disponivel.Value);
+                    }
+
+                    return View(await filmes.ToListAsync());
+                }
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         // GET: Filmes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null) return NotFound();
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
 
-            var filme = await _context.Filmes
-                .FirstOrDefaultAsync(m => m.Id == id);
+            if (user != null)
+            {
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    if (id == null) return NotFound();
 
-            if (filme == null) return NotFound();
+                    var filme = await _context.Filmes
+                        .FirstOrDefaultAsync(m => m.Id == id);
 
-            return View(filme);
+                    if (filme == null) return NotFound();
+
+                    return View(filme);
+                }
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         // GET: Filmes/Create
         public IActionResult Create()
         {
-            return View();
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null)
+            {
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    return View();
+                }
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         // POST: Filmes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Titulo,Descricao,Duracao,Genero,ClassificacaoEtaria,PosterPath,Disponivel")] Filme filme, IFormFile Poster)
+        public async Task<IActionResult> Create([Bind("Id,Titulo,Descricao,Duracao,Genero,ClassificacaoEtaria,Disponivel")] Filme filme, IFormFile Poster)
         {
-            if (ModelState.IsValid)
+            // 1. Validar se o ficheiro foi submetido
+            if (Poster == null || Poster.Length == 0)
             {
-                if (Poster != null && Poster.Length > 0)
-                {
-                    //Adicionar o poster ao diretório wwwroot/posters
-                    var pasta = Path.Combine("wwwroot", "posters");
-                    Directory.CreateDirectory(pasta);
-
-                    var caminho = Path.Combine(pasta, Poster.FileName);
-
-                    using (var stream = new FileStream(caminho, FileMode.Create))
-                    {
-                        Poster.CopyTo(stream);
-                    }
-
-                    // Atualizar o caminho do poster ao objeto filme
-                    filme.PosterPath = "/posters/" + Poster.FileName;
-                    filme.Disponivel = true; // Definir como disponível por padrão
-
-                    _context.Add(filme);
-                    await _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
+                ModelState.AddModelError("PosterPath", "O poster do filme é obrigatório.");
             }
+            else
+            {
+                // Limpa o erro padrão de [Required] do PosterPath para permitir que o ModelState.IsValid passe
+                ModelState.Remove("PosterPath");
+            }
+
+            // 2. Agora sim, verificar se o modelo é válido
+            if (ModelState.IsValid && Poster != null && Poster.Length > 0)
+            {
+                // Guardar a imagem na pasta
+                var pasta = Path.Combine("wwwroot", "posters");
+                Directory.CreateDirectory(pasta);
+
+                var nomeFicheiro = Guid.NewGuid().ToString() + Path.GetExtension(Poster.FileName);
+                var caminho = Path.Combine(pasta, nomeFicheiro);
+
+                using (var stream = new FileStream(caminho, FileMode.Create))
+                {
+                    await Poster.CopyToAsync(stream);
+                }
+
+                // Atribuir o caminho gerado ao objeto filme
+                filme.PosterPath = "/posters/" + nomeFicheiro;
+                filme.Disponivel = true;
+
+                _context.Add(filme);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
             return View(filme);
         }
+
 
         // GET: Filmes/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null) return NotFound();
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
 
-            var filme = await _context.Filmes.FindAsync(id);
-            if (filme == null) return NotFound();
-            return View(filme);
+            if (user != null)
+            {
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    if (id == null) return NotFound();
+
+                    var filme = await _context.Filmes.FindAsync(id);
+                    if (filme == null) return NotFound();
+                    return View(filme);
+                }
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         // POST: Filmes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Descricao,Duracao,Genero,ClassificacaoEtaria,PosterPath,Disponivel")] Filme filme)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Titulo,Descricao,Duracao,Genero,ClassificacaoEtaria,PosterPath,Disponivel")] Filme filme, IFormFile? Poster)
         {
             if (id != filme.Id) return NotFound();
 
@@ -93,6 +152,24 @@ namespace ProjetoFinal.Controllers
             {
                 try
                 {
+                    if (Poster != null && Poster.Length > 0)
+                    {
+                        var pasta = Path.Combine("wwwroot", "posters");
+                        Directory.CreateDirectory(pasta);
+
+                        var fileName = Guid.NewGuid() +
+                                       Path.GetExtension(Poster.FileName);
+
+                        var caminho = Path.Combine(pasta, fileName);
+
+                        using (var stream = new FileStream(caminho, FileMode.Create))
+                        {
+                            await Poster.CopyToAsync(stream);
+                        }
+
+                        filme.PosterPath = "/posters/" + fileName;
+                    }
+
                     _context.Update(filme);
                     await _context.SaveChangesAsync();
                 }
@@ -109,13 +186,23 @@ namespace ProjetoFinal.Controllers
         // GET: Filmes/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null) return NotFound();
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
 
-            var filme = await _context.Filmes
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (filme == null) return NotFound();
+            if (user != null)
+            {
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    if (id == null) return NotFound();
 
-            return View(filme);
+                    var filme = await _context.Filmes
+                        .FirstOrDefaultAsync(m => m.Id == id);
+                    if (filme == null) return NotFound();
+
+                    return View(filme);
+                }
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         // POST: Filmes/Delete/5
@@ -123,13 +210,25 @@ namespace ProjetoFinal.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var filme = await _context.Filmes.FindAsync(id);
-            if (filme != null)
+            //Retorna o primeiro utilizador com este nome
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null)
             {
-                _context.Filmes.Remove(filme);
-                await _context.SaveChangesAsync();
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    var filme = await _context.Filmes.FindAsync(id);
+                    if (filme != null)
+                    {
+                        filme.Disponivel = false; // Marca o filme como indisponível em vez de removê-lo do banco de dados
+
+                        _context.Update(filme);
+                        await _context.SaveChangesAsync();
+                    }
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
         }
 
         private bool FilmeExists(int id)

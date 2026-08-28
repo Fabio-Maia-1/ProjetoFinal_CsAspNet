@@ -1,0 +1,37 @@
+@model ProjetoFinal.Models.Sala
+
+@{
+    ViewData["Title"] = "Apagar Sala";
+}
+
+<h1>Apagar Sala</h1>
+<br />
+
+<h3>Tem a certeza que pretende remover esta sala da base de dados?</h3>
+
+<div>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">Nome</dt>
+        <dd class = "col-sm-10">@Model.Nome</dd>
+
+        <dt class = "col-sm-2">Nº Filas</dt>
+        <dd class = "col-sm-10">@Model.NumeroFilas</dd>
+
+        <dt class = "col-sm-2">Lugares por Fila</dt>
+        <dd class = "col-sm-10">@Model.LugaresPorFila</dd>
+
+        <dt class = "col-sm-2">Capacidade</dt>
+        <dd class = "col-sm-10">@Model.Capacidade</dd>
+
+        <dt class = "col-sm-2">Estado</dt>
+        <dd class = "col-sm-10">@Model.Estado</dd>
+    </dl>
+</div>
+<br />
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Apagar" class="btn btn-danger" /><br /><br />
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

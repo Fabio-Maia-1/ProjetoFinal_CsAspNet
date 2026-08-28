@@ -1,14 +1,17 @@
 @model ProjetoFinal.Models.Filme
 
 @{
-    ViewData["Title"] = "Create Filme";
+    ViewData["Title"] = "Adicionar Filme";
 }
 
-<h1>Criar Novo Filme</h1>
+<h1>Adicionar Filme</h1>
 <br />
 
 @* enctype="multipart/form-data" é obrigatório para upload de ficheiros. *@
 <form asp-action="Create" method="post" enctype="multipart/form-data">
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
     <div class="form-group">
         <label asp-for="Titulo" class="control-label"></label>
         <input asp-for="Titulo" class="form-control" />
@@ -41,16 +44,17 @@
     
     <div>
         <label style="font-weight:bold">Poster</label><br />
-        <input type="file" name="Poster" />
+        <input type="file" name="Poster" class="form-control" accept="image/*" />
+        <span asp-validation-for="PosterPath" class="text-danger"></span>
     </div>
-    <br />
+
+    <br /><br /><br />
 
     <div class="form-group">
         <input type="submit" value="Criar" class="btn btn-primary" /><br /><br />
         <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
     </div>
-    <br />
-    <br />
+
 
 </form>
 

@@ -6,11 +6,17 @@ namespace ProjetoFinal.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O nome da sala é obrigatório.")]
+        [StringLength(50, ErrorMessage = "O nome da sala não pode exceder 50 caracteres.")]
+        public string? Nome { get; set; }
+
+        [Required(ErrorMessage = "O número de filas da sala é obrigatório.")]
+        [Range(3, 26, ErrorMessage = "O número de filas deve estar entre 3 e 26.")]
         [Display(Name = "Nº de Filas")]
         public int NumeroFilas { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O número de lugares por fila é obrigatório.")]
+        [Range(3, 30, ErrorMessage = "O número de lugares por fila deve estar entre 3 e 30.")]
         [Display(Name = "Nº de Lugares por Fila")]
         public int LugaresPorFila { get; set; }
 

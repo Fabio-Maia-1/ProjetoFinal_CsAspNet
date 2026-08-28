@@ -90,7 +90,7 @@ namespace ProjetoFinal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ClassificacaoEtaria")
+                    b.Property<int>("ClassificacaoEtaria")
                         .HasColumnType("int");
 
                     b.Property<string>("Descricao")
@@ -106,6 +106,7 @@ namespace ProjetoFinal.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("PosterPath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Titulo")
@@ -155,6 +156,10 @@ namespace ProjetoFinal.Migrations
 
                     b.Property<int>("LugaresPorFila")
                         .HasColumnType("int");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NumeroFilas")
                         .HasColumnType("int");

@@ -1,14 +1,14 @@
 @model ProjetoFinal.Models.Filme
 
 @{
-    ViewData["Title"] = "Delete Filme";
+    ViewData["Title"] = "Indisponibilizar";
 }
 
-<h1>Delete Filme</h1>
+<h1>Indisponibilizar Filme</h1>
+<br />
 
-<h3>Are you sure you want to delete this?</h3>
+<h3>Quer indisponibilizar este Filme?</h3>
 <div>
-    <h4>Filme</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">Título</dt>
@@ -23,7 +23,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <input type="submit" value="Indisponibilizar" class="btn btn-danger" /><br /><br />
+        <a asp-action="Index" class="btn btn-secondary">Voltar à lista</a>
     </form>
 </div>

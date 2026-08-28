@@ -14,8 +14,8 @@ namespace ProjetoFinal.Models
 
 
         [Display(Name = "Título")]
-        [Required]
-        [StringLength(150)]
+        [Required(ErrorMessage = "O título do filme é obrigatório.")]
+        [StringLength(150, ErrorMessage = "O título do filme não pode exceder 150 caracteres.")]
         public string? Titulo { get; set; }
 
 
@@ -25,21 +25,23 @@ namespace ProjetoFinal.Models
 
         //Medido em minutos
         [Display(Name = "Duração")]
-        [Range(1, 500)]
-        [Required]
+        [Range(1, 500, ErrorMessage = "A duração deve estar entre 1 e 500 minutos.")]
+        [Required(ErrorMessage = "A duração do filme é obrigatória.")]
         public int Duracao { get; set; }
 
 
-        [Required]
+        [Required(ErrorMessage = "O género do filme é obrigatório.")]
         [Display(Name = "Género")]
         public GenerosFilme Genero { get; set; }
 
 
         [Display(Name = "Classificação Etária")]
+        [Required(ErrorMessage = "A classificação etária do filme é obrigatória.")]
         public classificacoesEtariasFilme? ClassificacaoEtaria { get; set; }
 
 
         [Display(Name = "Poster Path")]
+        [Required(ErrorMessage = "O poster do filme é obrigatório.")]
         public string? PosterPath { get; set; }
 
 
@@ -53,16 +55,23 @@ namespace ProjetoFinal.Models
 
     public enum GenerosFilme
     {
+        [Display(Name = "Ação")]
         Acao = 0,
+        [Display(Name = "Comédia")]
         Comedia = 1,
         Drama = 2,
         Terror = 3,
+        [Display(Name = "Ficção Científica")]
         FiccaoCientifica = 4,
+        [Display(Name = "Animação")]
         Animacao = 5,
         Romance = 6,
+        [Display(Name = "Aventura")]
         Aventura = 7,
         Thriller = 8,
-        Musical = 9
+        Musical = 9,
+        Fantasia = 10,
+        Biografia = 11,
     }
 
     public enum classificacoesEtariasFilme
