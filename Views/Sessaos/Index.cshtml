@@ -1,0 +1,40 @@
+@model IEnumerable<ProjetoFinal.Models.Sessao>
+
+@{
+    ViewData["Title"] = "Sessoes";
+}
+
+<h1>Sessões</h1>
+<br />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Criar Sessão</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Data e Hora</th>
+            <th>Filme</th>
+            <th>Sala</th>
+            <th>Estado</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.DataHora.ToString("g")</td>
+            <td>@item.Filme?.Titulo</td>
+            <td>@item.Sala?.Nome</td>
+            <td>@item.Estado</td>
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">Detalhes</a> |
+                <a asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Apagar</a>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

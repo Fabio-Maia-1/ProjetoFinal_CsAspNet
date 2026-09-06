@@ -1,0 +1,30 @@
+@model ProjetoFinal.Models.Sessao
+
+@{
+    ViewData["Title"] = "Detalhes da Sessão";
+}
+
+<h1>Detalhes da Sessão</h1>
+
+<div>
+    <h4>Sessão</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Data e Hora</dt>
+        <dd class="col-sm-10">@Model.DataHora.ToString("g")</dd>
+
+        <dt class="col-sm-2">Filme</dt>
+        <dd class="col-sm-10">@Model.Filme?.Titulo</dd>
+
+        <dt class="col-sm-2">Sala</dt>
+        <dd class="col-sm-10">@Model.Sala?.Nome</dd>
+
+        <dt class="col-sm-2">Estado</dt>
+        <dd class="col-sm-10">@Model.Estado</dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>

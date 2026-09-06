@@ -1,0 +1,34 @@
+@model ProjetoFinal.Models.Sessao
+
+@{
+    ViewData["Title"] = "Criar Sessão";
+}
+
+<h1>Criar Sessão</h1>
+<br />
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="DataHora" class="control-label"></label>
+        <input asp-for="DataHora" class="form-control" type="datetime-local" min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")" />
+        <span asp-validation-for="DataHora" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="FilmeId" class="control-label">Filme</label>
+        <select asp-for="FilmeId" class="form-control" asp-items="@(ViewBag.FilmeId as SelectList)"></select>
+        <span asp-validation-for="FilmeId" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="SalaId" class="control-label">Sala</label>
+        <select asp-for="SalaId" class="form-control" asp-items="@(ViewBag.SalaId as SelectList)"></select>
+        <span asp-validation-for="SalaId" class="text-danger"></span>
+    </div>
+    <br />
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Confirmar" class="btn btn-primary" /><br /><br />
+        <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+    </div>
+</form>

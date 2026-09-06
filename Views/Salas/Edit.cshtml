@@ -24,7 +24,7 @@
         p-3: padding de 3 unidades -->
     <div class="card my-4 p-3 bg-light">
 
-        <!-- Layout dos Lugares -->
+        <!-- Layout dos lugares -->
         <div class="d-flex flex-column align-items-center gap-2 overflow-auto py-2">
             @for (int fila = 1; fila <= Model.NumeroFilas; fila++)
             {
@@ -32,15 +32,14 @@
                 char letraFila = (char)('A' + fila - 1);
 
                 <div class="d-flex align-items-center gap-2">
-                    <!-- Identificador da Fila-->
+                    <!-- Letra da fila-->
                     <span class="fw-bold text-muted me-2" style="width: 20px;">@letraFila</span>
 
-                    <!-- Grelha de Lugares da Fila -->
+                    <!-- Lugares da fila  -->
                     <div class="d-flex gap-1">
                         @for (int lugar = 1; lugar <= Model.LugaresPorFila; lugar++)
                         {
-                            // Define se adiciona um corredor (ex: após o lugar 5 numa sala de 10)
-                            // Podes ajustar o '5' conforme a largura pretendida
+                            // Define se adiciona um corredor. Pode haver 1 ou 2 corredores dependendo do tamanho da sala
                             if (Model.LugaresPorFila % 3 == 0 && Model.LugaresPorFila > 17)
                             {
                                 bool tem2Corredores = (lugar == Model.LugaresPorFila / 3 || lugar == Model.LugaresPorFila / 3 + Model.LugaresPorFila / 3);
