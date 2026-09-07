@@ -7,8 +7,6 @@
 <h1>Lista de Filmes</h1>
 <br />
 
-
-
 <p>
     <a asp-action="Create" class="btn btn-primary">Adicionar Novo Filme</a>
 </p>
@@ -40,8 +38,8 @@
             <td>@item.Genero</td>
             <td>@item.Duracao</td>
             <td>@(item.Disponivel ? "Sim" : "Não")</td>
-                <td><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a></td>
-                <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar </a></td>
+            <td><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a></td>
+            <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar </a></td>
         </tr>
     }
     </tbody>

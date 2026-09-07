@@ -30,6 +30,7 @@ namespace ProjetoFinal.Controllers
                     if (disponivel.HasValue)
                     {
                         filmes = filmes.Where(f => f.Disponivel == disponivel.Value);
+                        
                     }
 
                     return View(await filmes.ToListAsync());

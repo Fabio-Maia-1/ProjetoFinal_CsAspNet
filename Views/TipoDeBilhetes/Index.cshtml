@@ -1,0 +1,41 @@
+@model IEnumerable<ProjetoFinal.Models.TipoDeBilhete>
+
+@{
+    ViewData["Title"] = "Tipos de Bilhetes";
+}
+
+<h1>Tipos de Bilhetes</h1>
+<br />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Novo Tipo</a>
+</p>
+
+<div class="d-flex gap-2 mb-3">
+    <a asp-action="Index" class="btn btn-secondary">Ver Todos</a>
+    <a asp-action="Index" asp-route-ativo="true" class="btn btn-success">Ver Ativos</a>
+    <a asp-action="Index" asp-route-ativo="false" class="btn btn-danger">Ver Inátivos</a>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Preço</th>
+            <th>Ativo</th>
+            <th>Editar</th>
+            <th>Desativar</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Tipo</td>
+            <td>@item.Preco.ToString("C")</td>
+            <td>@(item.Ativo ? "Sim" : "Não")</td>
+            <td><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Editar</a></td>
+            <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

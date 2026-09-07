@@ -5,6 +5,7 @@
 }
 
 <h1>Editar Sessão</h1>
+<br />
 
 <form asp-action="Edit" method="post">
     <input type="hidden" asp-for="Id" />
@@ -33,8 +34,10 @@
         <span asp-validation-for="Estado" class="text-danger"></span>
     </div>
 
+    <br />
+
     <div class="form-group mt-3">
-        <input type="submit" value="Guardar" class="btn btn-primary" />
+        <input type="submit" value="Guardar" class="btn btn-primary" /><br /><br />
         <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
     </div>
 </form>

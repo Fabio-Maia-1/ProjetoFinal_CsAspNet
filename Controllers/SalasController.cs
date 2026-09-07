@@ -18,13 +18,31 @@ namespace ProjetoFinal.Controllers
         }
 
         // GET: Salas
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? estado)
         {
             var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
 
             if (user != null && HttpContext.Session.GetString("TIPO") == "admin")
             {
-                return View(await _context.Salas.OrderByDescending(s => s.Id).ToListAsync());
+                var salas = _context.Salas.OrderByDescending(s => s.Id).AsQueryable();
+
+                if (estado.HasValue)
+                {
+                    if (estado.Value == 0) // Ativa
+                    {
+                        salas = salas.Where(s => s.Estado == EstadosSala.Ativa);
+                    }
+                    else if (estado.Value == 1) // Manutencao
+                    {
+                        salas = salas.Where(s => s.Estado == EstadosSala.Manutencao);
+                    }
+                    else // Fechada
+                    {
+                        salas = salas.Where(s => s.Estado == EstadosSala.Fechada);
+                    }
+                }
+
+                return View(await salas.ToListAsync());
             }
 
             return RedirectToAction("Index", "Login");

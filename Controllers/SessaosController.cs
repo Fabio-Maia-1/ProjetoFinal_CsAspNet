@@ -1,11 +1,12 @@
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProjetoFinal.Data;
 using ProjetoFinal.Models;
-using Microsoft.AspNetCore.Http;
+using System.Linq;
+using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace ProjetoFinal.Controllers
 {
@@ -18,23 +19,50 @@ namespace ProjetoFinal.Controllers
             _context = context;
         }
 
+
         // GET: Sessaos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? estado)
         {
             var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
 
             if (user != null && HttpContext.Session.GetString("TIPO") == "admin")
             {
-                var sessoes = _context.Sessoes
-                    .Include(s => s.Filme)
-                    .Include(s => s.Sala)
-                    .OrderByDescending(s => s.DataHora);
+                var sessoes = _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).OrderByDescending(s => s.DataHora).AsQueryable();
 
+                if (estado.HasValue)
+                {
+                    if (estado.Value == 0) // Agendada
+                    {
+                        sessoes = sessoes.Where(s => s.Estado == EstadosSessao.Agendada);
+                    }
+                    else if (estado.Value == 1) // Concluida
+                    {
+                        sessoes = sessoes.Where(s => s.Estado == EstadosSessao.Concluida);
+                    }
+                    else // Cancelada
+                    {
+                        sessoes = sessoes.Where(s => s.Estado == EstadosSessao.Cancelada);
+                    }
+                }
                 return View(await sessoes.ToListAsync());
             }
 
             return RedirectToAction("Index", "Login");
         }
+
+
+        public async Task<IActionResult> Comprar(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var sessao = await _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (sessao == null) return NotFound();
+
+            return View(sessao);
+        }
+
+
 
         // GET: Sessaos/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -118,7 +146,7 @@ namespace ProjetoFinal.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Se falhar a validação, recarrega a View com as dropdowns selecionados
+            // Se falhar a validação, recarrega a View com os dropdowns preenchidos e os erros de validação
             ViewBag.FilmeId = new SelectList(_context.Filmes.Where(f => f.Disponivel), "Id", "Titulo", sessao.FilmeId);
             ViewBag.SalaId = new SelectList(_context.Salas, "Id", "Nome", sessao.SalaId);
             return View(sessao);
@@ -239,7 +267,9 @@ namespace ProjetoFinal.Controllers
             var sessao = await _context.Sessoes.FindAsync(id);
             if (sessao != null)
             {
-                _context.Sessoes.Remove(sessao);
+                sessao.Estado = EstadosSessao.Cancelada; // Marca a sessão como cancelada em vez de removê-la
+                _context.Update(sessao);
+                //_context.Sessoes.Remove(sessao);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

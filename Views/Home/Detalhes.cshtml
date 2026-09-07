@@ -1,0 +1,70 @@
+@model ProjetoFinal.Models.Filme
+
+@{
+    ViewData["Title"] = "Detalhes do Filme";
+}
+
+<br />
+<div class="row">
+    <div class="col-md-8">
+        <h4 style="font-weight:bold">@Model.Titulo</h4>
+        <br />
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-3">Descrição</dt>
+            <dd class="col-sm-9">@Model.Descricao</dd>
+
+            <dt class="col-sm-3">Duração</dt>
+            <dd class="col-sm-9">@Model.Duracao minutos</dd>
+
+            <dt class="col-sm-3">Género</dt>
+            <dd class="col-sm-9">@Model.Genero</dd>
+
+            <dt class="col-sm-3">Classificação Etária</dt>
+            <dd class="col-sm-9">@Model.ClassificacaoEtaria</dd>
+
+        </dl>
+        <hr />
+    </div>
+
+    <div class="col-md-4 text-center align-content-center">
+        <img src="@Model.PosterPath" alt="@Model.Titulo" class="img-fluid rounded shadow" style="max-height: 450px;" />
+    </div>
+</div>
+
+<br />
+<br />
+
+<h4 style="font-weight:bold">Lista de Sessões:</h4>
+<hr />
+<div>
+    @if (Model.Sessoes != null && Model.Sessoes.Any())
+    {
+        var sessoesOrdenadas = Model.Sessoes.OrderBy(s => s.DataHora).ToList();
+
+        <ul class="list-group mt-3">
+            @foreach (var sessao in sessoesOrdenadas)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>@sessao.DataHora.ToString("dd/MM/yyyy HH:mm")</strong><br />
+                    </div>
+
+                    <a asp-action="Comprar" asp-controller="Sessaos" asp-route-id="@sessao.Id" class="btn-comprar" style="width:stretch">Ver Sessão</a>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p>Não existem sessões disponíveis para este filme.</p>
+    }
+</div>
+
+<br />
+<br />
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</div>
+   

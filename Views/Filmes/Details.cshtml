@@ -36,14 +36,14 @@
         </dl>
     </div>
 
-    <div class="col-md-4 text-center">
+    <div class="col-md-4 text-center align-content-center">
         <img src="@Model.PosterPath" alt="@Model.Titulo" class="img-fluid rounded shadow" style="max-height: 500px;" />
     </div>
 </div>
 
 <br />
 <p class="mt-3">
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
     <br /><br />
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
 </p>

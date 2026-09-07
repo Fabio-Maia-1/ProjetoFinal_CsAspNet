@@ -3,5 +3,14 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Olá, Admin</h1>
+    <h2 class="display-4">Bem-Vindo, Admin</h2>
+    <br /><br /><br />
+
+    <div class="admin-grid">
+        <a asp-action="Index" asp-controller="Filmes" class="btn btn-secondary admin-btn">Gerir Filmes</a>
+        <a asp-action="Index" asp-controller="Salas" class="btn btn-secondary admin-btn">Gerir Salas</a>
+        <a asp-action="Index" asp-controller="Sessaos" class="btn btn-secondary admin-btn">Gerir Sessões</a>
+        <a asp-action="Index" asp-controller="TipoDeBilhetes" class="btn btn-secondary admin-btn">Gerir Tipos de Bilhetes</a>
+    </div>
+   
 </div>

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ProjetoFinal.Data;
 using ProjetoFinal.Models;
 using System.Diagnostics;
@@ -30,6 +31,18 @@ namespace ProjetoFinal.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Detalhes(int? id)
+        {
+            if (id == null) return NotFound();
+
+            var filme = await db.Filmes.Include(s => s.Sessoes).FirstOrDefaultAsync(m => m.Id == id);
+
+            if (filme == null) return NotFound();
+
+            return View(filme);
+        }
+
 
         public IActionResult Privacy()
         {

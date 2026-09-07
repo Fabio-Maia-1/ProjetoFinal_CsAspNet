@@ -11,8 +11,10 @@
 <form>
 
     <div class="text-center">
-        <h1 class="display-4">@ViewBag.Cliente</h1>
+        <h2 class="display-4">@ViewBag.Cliente</h2>
     </div>
+
+    <br />
 
     <div class="filmes-container">
 
@@ -24,10 +26,9 @@
                     <h4 style="color:white">@filme.Titulo</h4>
                     <p>Duração: @filme.Duracao min</p>
                 </div>
-                <a href="#" class="btn-comprar">Verificar Sessão</a>
+                <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@filme.Id" class="btn-comprar">Verificar Sessões</a>
             </div>
         }
-
     </div>
 
 </form>

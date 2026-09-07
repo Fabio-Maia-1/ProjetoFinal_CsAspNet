@@ -1,0 +1,81 @@
+@model ProjetoFinal.Models.Sessao
+
+@{
+    ViewData["Title"] = "Detalhes da Sessão";
+}
+<br />
+
+<div class="row">
+    <div class="col-md-4">
+        <h4 style="font-weight:bold">@Model.Filme?.Titulo</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-5">Data e Hora</dt>
+            <dd class="col-sm-7">@Model.DataHora.ToString("g")</dd>
+
+            <dt class="col-sm-5">Sala</dt>
+            <dd class="col-sm-7">@Model.Sala?.Nome</dd>
+        </dl>
+        <div class="col-sm-11 text-center align-content-center">
+            <img src="@Model.Filme?.PosterPath" alt="@Model.Filme?.Titulo" class="img-fluid rounded shadow" style="max-height: 300px;" />
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <h4 style="font-weight:bold;text-align:center">Selecione os Seus Lugares</h4>
+        <hr />
+
+        <div class="card p-3 bg-light align-content-center" style="box-sizing: border-box;">
+            <div class="seating-wrapper">
+                <div class="seating py-2">
+                    @for (int fila = 1; fila <= Model.Sala?.NumeroFilas; fila++)
+                    {
+                        char letraFila = (char)('A' + fila - 1);
+                        <div class="seat-row">
+                            <span class="fw-bold text-muted me-2" style="width: 15px;">@letraFila</span>
+
+                            <div class="seats">
+                                @for (int lugar = 1; lugar <= Model.Sala?.LugaresPorFila; lugar++)
+                                {
+                                    // Define se adiciona um corredor. Pode haver 1 ou 2 corredores dependendo do tamanho da sala
+                                    if (Model.Sala?.LugaresPorFila % 3 == 0 && Model.Sala?.LugaresPorFila > 17)
+                                    {
+                                        bool tem2Corredores = (lugar == Model.Sala?.LugaresPorFila / 3 || lugar == Model.Sala?.LugaresPorFila / 3 + Model.Sala?.LugaresPorFila / 3);
+
+                                        <div class="seat @(tem2Corredores ? "me-4" : "")" style="width: 30px; height: 30px;"
+                                            title="Fila @letraFila, Lugar @lugar"> @lugar
+                                        </div>
+                                    }
+                                    else if (Model.Sala?.LugaresPorFila % 2 == 0 && Model.Sala?.LugaresPorFila > 9)
+                                    {
+                                        bool temCorredor = (lugar == Model.Sala?.LugaresPorFila / 2);
+
+                                        <div class="seat @(temCorredor ? "me-4" : "")" style="width: 30px; height: 30px;"
+                                             title="Fila @letraFila, Lugar @lugar">
+                                            @lugar
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="seat" style="width: 30px; height: 30px;" title="Fila @letraFila, Lugar @lugar"> @lugar </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <br />
+    </div>
+
+    <br />
+
+</div>
+<br />
+
+<div>
+    <a asp-action="" asp-controller="" asp-route-id="@Model.Id" class="btn btn-primary 
+    @(Model.Estado != EstadosSessao.Agendada ? "disabled" : "")">Comprar</a><br /><br />
+    <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@Model.Filme?.Id" class="btn btn-secondary">Voltar</a>
+</div>

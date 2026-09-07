@@ -30,7 +30,6 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-
     font-family: Arial, sans-serif;
     background: #2B2B2B;
     color: #F2F2F2;
@@ -239,4 +238,72 @@ dd {
     color: black;
     margin: 18px;
     border-radius: 8px;
+}
+
+
+.admin-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+    gap: 30px;
+    max-width: 800px;
+    margin: 0 auto; /* centrar o grid na página */
+}
+
+.admin-btn {
+    height: 100px;
+    letter-spacing: 0.3px;
+    font-family: 'Franklin Gothic Medium';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+
+
+
+/* wrapper que controla o scroll horizontal */
+.seating-wrapper {
+    overflow-x: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding: 8px;
+}
+
+/* container das filas: permite largura natural e evita que o flex encolha conteúdo */
+.seating {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    align-items: flex-start; /* alinhar à esquerda para evitar centrar o bloco inteiro */
+    min-width: max-content; /* garante que o conteúdo define a largura necessária */
+}
+
+/* cada linha de lugares */
+.seat-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* wrapper dos lugares dentro da fila */
+.seats {
+    display: inline-flex;
+    gap: 6px;
+    min-width: max-content;
+}
+
+/* cada lugar */
+.seat {
+    width: 48px;
+    height: 48px;
+    flex: 0 0 30px; /* não encolhe nem cresce */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #6c757d;
+    background: #fff;
+    border-radius: 4px;
 }
