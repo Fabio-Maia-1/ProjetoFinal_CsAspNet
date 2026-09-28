@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using ProjetoFinal.Data;
 using ProjetoFinal.Models;
@@ -45,6 +47,160 @@ namespace ProjetoFinal.Controllers
             }
 
             return View();
+        }
+
+        public async Task<IActionResult> Details()
+        {
+            //Retorna o primeiro utilizador com este nome
+            var user = db.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null)
+            {
+                return View(user); 
+            }
+            return RedirectToAction("Index", "Login"); //Faz reload da página de login.
+        }
+
+
+        // ------- Novo Nome
+        public async Task<IActionResult> NovoNome(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Usa FindAsync ou FirstOrDefaultAsync para ser assíncrono
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user != null)
+            {
+                return View(user);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NovoNome(int id, string Nome)
+        {
+            // Procura o utilizador real na base de dados
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user == null) return NotFound();
+
+            // Valida se o novo nome foi preenchido
+            if (string.IsNullOrWhiteSpace(Nome))
+            {
+                ModelState.AddModelError("Nome", "Introduza o novo nome.");
+                return View(user);
+            }
+
+            if (Nome != null && Nome.Length > 0)
+            {
+                user.Nome = Nome;
+                try
+                {
+                    await db.SaveChangesAsync();
+                    return RedirectToAction(nameof(Details));
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Index", "Login");
+        }
+
+
+        // ------- Nova Pass
+        public async Task<IActionResult> NovaPass(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Usa FindAsync ou FirstOrDefaultAsync para ser assíncrono
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user != null)
+            {
+                return View(user);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> NovaPass(int id, string passVelha, string passNova, string passNova2)
+        {
+            ViewBag.PassVelha = "";
+            ViewBag.PassNova = "";
+            ViewBag.PassNova2 = "";
+
+            if (!string.IsNullOrEmpty(passVelha))
+            {
+                ViewBag.PassVelha = passVelha;
+            }
+            if (!string.IsNullOrEmpty(passNova))
+            {
+                ViewBag.PassNova = passNova;
+            }
+            if (!string.IsNullOrEmpty(passNova2))
+            {
+                ViewBag.PassNova2 = passNova2;
+            }
+
+            // Procura o utilizador na base de dados
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user == null) return NotFound();
+
+            // Verifica a pass atual
+            if (user.PasswordHash != passVelha)
+            {
+                ModelState.AddModelError("passVelha", "A Palavra-Passe atual foi introduzida incorretamente.");
+                return View(user);
+            }
+
+            // Verifica se são iguais
+            if (passNova != passNova2)
+            {
+                ModelState.AddModelError("passNova", "A confirmação da Palavra-Passe não foi feita corretamente.");
+                return View(user);
+            }
+
+            // Valida se a nova é diferente
+            if (passVelha == passNova)
+            {
+                ModelState.AddModelError("passNova", "A nova Palavra-Passe não pode ser igual à anterior.");
+                return View(user);
+            }
+
+            // Se houver algum erro registrado no ModelState, devolve a view com os erros
+            if (!ModelState.IsValid)
+            {
+                return View(user);
+            }
+
+            try
+            {
+                user.PasswordHash = passNova;
+                await db.SaveChangesAsync();
+                return RedirectToAction(nameof(Details));
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+        }
+
+
+        public IActionResult Logout()
+        {
+            //Limpar o session
+            HttpContext.Session.SetString("NOME", "");
+            HttpContext.Session.SetString("EMAIL", "");
+            HttpContext.Session.SetString("TIPO", "");
+
+            return RedirectToAction("Index", "Home");
         }
 
         public IActionResult Registar(string nome, string email, string password, string password2)
@@ -95,6 +251,36 @@ namespace ProjetoFinal.Controllers
                 if (verificar != null) { ViewBag.Aviso1 = "Já existe uma conta ativa associada a esse email."; }
             }
             return View();
+        }
+
+        // ---------- Desativar
+        public async Task<IActionResult> Desativar(int? id)
+        {
+            if (id == null) return NotFound();
+
+            // Usa FindAsync ou FirstOrDefaultAsync para ser assíncrono
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user != null)
+            {
+                return View(user);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost, ActionName("Desativar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DesativarConfirmed(int id)
+        {
+            var user = await db.Utilizadors.FindAsync(id);
+
+            if (user != null)
+            {
+                user.Ativo = false;
+                await db.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

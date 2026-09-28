@@ -10,7 +10,7 @@ namespace ProjetoFinal.Models
         [Display(Name = "Data e Hora")]
         public DateTime DataHora { get; set; }
 
-        public EstadosSessao Estado { get; set; } = EstadosSessao.Agendada;
+        public EstadosSessao Estado { get; set; } = EstadosSessao.EmPreparacao;
 
         [Required]
         public int FilmeId { get; set; }
@@ -28,8 +28,9 @@ namespace ProjetoFinal.Models
 
     public enum EstadosSessao
     {
-        Agendada = 0,
-        Concluida = 1,
-        Cancelada = 2
+        EmPreparacao = 0,
+        Agendada = 1,
+        Concluida = 2,
+        Cancelada = 3
     }
 }

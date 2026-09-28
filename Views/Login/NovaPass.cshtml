@@ -1,0 +1,52 @@
+@model ProjetoFinal.Models.Utilizador
+
+@{
+    ViewData["Title"] = "Aterar Palavra-Passe";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fafafa;
+        color: #333333;
+    }
+</style>
+
+
+<form asp-action="NovaPass" asp-route-id="@Model.Id" method="post">
+    <div class="login-container">
+
+        <h1>Aterar Palavra-Passe</h1>
+        <br />
+        <input type="hidden" asp-for="Id" />
+
+        <div class="form-group">
+            <label>Introduza a Palavra-Passe atual: </label>
+            <input type="text" name="passVelha" value="@ViewBag.PassVelha">
+            @Html.ValidationMessage("passVelha", "", new { @class = "text-danger" })
+
+            <br /><br />
+
+            <label>Introduza a nova Palavra-Passe: </label>
+            <input type="text" name="passNova" value="@ViewBag.PassNova">
+            @Html.ValidationMessage("passNova", "", new { @class = "text-danger" })
+
+            <br /><br />
+
+            <label>Confirmar a nova Palavra-Passe: </label>
+            <input type="text" name="passNova2" value="@ViewBag.PassNova2">
+            @Html.ValidationMessage("passNova2", "", new { @class = "text-danger" })
+        </div>
+        
+
+        <br />
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" /><br /><br />
+            <a asp-action="Details" class="btn btn-secondary">Voltar ao Perfil</a>
+        </div>
+    </div>
+
+</form>

@@ -1,0 +1,43 @@
+@model ProjetoFinal.Models.Utilizador
+
+@{
+    ViewData["Title"] = "Perfil do Utilizador";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fafafa;
+        color: #333333;
+    }
+</style>
+
+<form>
+    <div class="login-container">
+
+        <h2>Perfil do Utilizador</h2>
+        <br />
+
+        <div class="form-group">
+            <label>Email:</label>
+            <label style="color:#757575">@Model.Email</label>
+        </div>
+        <br />
+
+        <div class="form-group">
+            <label>Nome:</label>
+            <label style="color:#757575">@Model.Nome</label>
+        </div>
+        <br />
+        
+        <div class="d-flex gap-2 mb-2">
+            <a class="btn btn-primary" asp-area="" asp-controller="Login" asp-action="NovoNome" asp-route-id="@Model.Id">Alterar Nome</a> <br /><br />
+            <a class="btn btn-primary" asp-area="" asp-controller="Login" asp-action="NovaPass" asp-route-id="@Model.Id">Alterar Palavra-Passe</a>
+        </div>
+
+        <a class="btn btn-danger" asp-area="" asp-controller="Login" asp-action="Desativar" asp-route-id="@Model.Id">Destivatar Conta</a><br /><br />
+        <a asp-action="Index" asp-controller="Home" class="btn btn-secondary">Voltar</a>
+    </div>
+</form>

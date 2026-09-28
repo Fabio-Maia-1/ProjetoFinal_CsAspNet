@@ -1,0 +1,34 @@
+@model ProjetoFinal.Models.Bilhete
+
+@{
+    ViewData["Title"] = "Eliminar Bilhete";
+}
+
+<h1>Eliminar Bilhete</h1>
+
+<h3>Tem a certeza que pretende eliminar este bilhete?</h3>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Id</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">Estado</dt>
+        <dd class="col-sm-10">@Model.Estado</dd>
+
+        <dt class="col-sm-2">Sessão</dt>
+        <dd class="col-sm-10">@(Model.Sessao != null ? Model.Sessao.DataHora.ToString("g") : "-")</dd>
+
+        <dt class="col-sm-2">Lugar</dt>
+        <dd class="col-sm-10">@(Model.Lugar != null ? (Model.Lugar.Fila + Model.Lugar.Numero) : "-")</dd>
+
+        <dt class="col-sm-2">Tipo</dt>
+        <dd class="col-sm-10">@(Model.TipoDeBilhete != null ? Model.TipoDeBilhete.Tipo : "-")</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Eliminar" class="btn btn-danger" />
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

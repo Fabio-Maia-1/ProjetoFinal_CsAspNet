@@ -75,7 +75,9 @@
 <br />
 
 <div>
-    <a asp-action="" asp-controller="" asp-route-id="@Model.Id" class="btn btn-primary 
-    @(Model.Estado != EstadosSessao.Agendada ? "disabled" : "")">Comprar</a><br /><br />
+    @if (ViewBag.SerAdmin == false)
+    {
+        <a asp-action="" asp-controller="" asp-route-id="@Model.Id" class="btn btn-primary @(Model.Estado != EstadosSessao.Agendada ? "disabled" : "")">Comprar</a><br /><br />
+    }
     <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@Model.Filme?.Id" class="btn btn-secondary">Voltar</a>
 </div>

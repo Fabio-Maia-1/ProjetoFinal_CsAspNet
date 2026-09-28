@@ -17,7 +17,7 @@ namespace ProjetoFinal.Controllers
 
         public IActionResult Index()
         {
-            if (HttpContext.Session.GetString("NOME") == null)
+            if (HttpContext.Session.GetString("NOME") == null || HttpContext.Session.GetString("NOME") == "")
             {
                 ViewBag.Cliente = "Bem-Vindo";
             }

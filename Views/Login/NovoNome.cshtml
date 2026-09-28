@@ -1,0 +1,41 @@
+@model ProjetoFinal.Models.Utilizador
+
+@{
+    ViewData["Title"] = "Editar Nome";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fafafa;
+        color: #333333;
+    }
+</style>
+
+
+<form asp-action="NovoNome" asp-route-id="@Model.Id" method="post">
+    <div class="login-container">
+        <h1>Editar Nome</h1>
+        <br />
+        <input type="hidden" asp-for="Id" />
+
+        <label>Nome Atual: <strong>@Model.Nome</strong></label>
+        <br />
+
+        <br />
+        <div class="form-group">
+            <label asp-for="Nome" class="control-label">Novo Nome</label>
+            <input asp-for="Nome" class="form-control" />
+            <span asp-validation-for="Nome" class="text-danger"></span>
+        </div>
+
+        <br /><br />
+
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-primary" /><br /><br />
+            <a asp-action="Details" class="btn btn-secondary">Voltar ao Perfil</a>
+        </div>
+    </div>
+</form>

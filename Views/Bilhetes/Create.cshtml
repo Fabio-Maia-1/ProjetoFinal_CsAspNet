@@ -1,0 +1,40 @@
+@model ProjetoFinal.Models.Bilhete
+@using ProjetoFinal.Models
+
+@{
+    ViewData["Title"] = "Criar Bilhete";
+}
+
+<h1>Criar Bilhete</h1>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="Estado" class="control-label"></label>
+        <select asp-for="Estado" class="form-control" asp-items="Html.GetEnumSelectList(typeof(EstadosBilhete))"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="SessaoId" class="control-label">Sessão</label>
+        <select asp-for="SessaoId" class="form-control" asp-items="(SelectList)ViewBag.SessaoId"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LugarId" class="control-label">Lugar</label>
+        <select asp-for="LugarId" class="form-control" asp-items="(SelectList)ViewBag.LugarId"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="TipoId" class="control-label">Tipo</label>
+        <select asp-for="TipoId" class="form-control" asp-items="(SelectList)ViewBag.TipoId"></select>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="CompraId" class="control-label">Compra</label>
+        <select asp-for="CompraId" class="form-control" asp-items="(SelectList)ViewBag.CompraId"></select>
+    </div>
+
+    <div class="form-group mt-3">
+        <input type="submit" value="Criar" class="btn btn-primary" />
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

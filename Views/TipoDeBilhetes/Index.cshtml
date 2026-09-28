@@ -23,7 +23,7 @@
             <th>Preço</th>
             <th>Ativo</th>
             <th>Editar</th>
-            <th>Desativar</th>
+            <th>Desativar / Ativar</th>
         </tr>
     </thead>
     <tbody>
@@ -34,7 +34,14 @@
             <td>@item.Preco.ToString("C")</td>
             <td>@(item.Ativo ? "Sim" : "Não")</td>
             <td><a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary">Editar</a></td>
-            <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar</a></td>
+            @if (item.Ativo)
+            {
+                <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Desativar</a></td>
+            }
+            else
+            {
+                <td><a asp-action="Ativar" asp-route-id="@item.Id" class="btn btn-danger">Ativar</a></td>
+            }
         </tr>
     }
     </tbody>

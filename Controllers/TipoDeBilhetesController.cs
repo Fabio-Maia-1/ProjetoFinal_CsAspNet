@@ -160,6 +160,46 @@ namespace ProjetoFinal.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+        // ------------ REATIVAR
+        public async Task<IActionResult> Ativar(int? id)
+        {
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null && HttpContext.Session.GetString("TIPO") == "admin")
+            {
+                if (id == null) return NotFound();
+
+                var tipo = await _context.TiposDeBilhetes.FirstOrDefaultAsync(m => m.Id == id);
+                if (tipo == null) return NotFound();
+
+                return View(tipo);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost, ActionName("Ativar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AtivarConfirmed(int id)
+        {
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user == null || HttpContext.Session.GetString("TIPO") != "admin")
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var tipo = await _context.TiposDeBilhetes.FindAsync(id);
+            if (tipo != null)
+            {
+                tipo.Ativo = true;
+                _context.Update(tipo);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+
         private bool TipoDeBilheteExists(int id)
         {
             return _context.TiposDeBilhetes.Any(e => e.Id == id);

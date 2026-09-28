@@ -1,0 +1,34 @@
+@model ProjetoFinal.Models.Bilhete
+
+@{
+    ViewData["Title"] = "Detalhes do Bilhete";
+}
+
+<h1>Detalhes do Bilhete</h1>
+
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Id</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">Estado</dt>
+        <dd class="col-sm-10">@Model.Estado</dd>
+
+        <dt class="col-sm-2">Sessão</dt>
+        <dd class="col-sm-10">@(Model.Sessao != null ? Model.Sessao.DataHora.ToString("g") : "-")</dd>
+
+        <dt class="col-sm-2">Lugar</dt>
+        <dd class="col-sm-10">@(Model.Lugar != null ? (Model.Lugar.Fila + Model.Lugar.Numero) : "-")</dd>
+
+        <dt class="col-sm-2">Tipo</dt>
+        <dd class="col-sm-10">@(Model.TipoDeBilhete != null ? Model.TipoDeBilhete.Tipo : "-")</dd>
+
+        <dt class="col-sm-2">Compra</dt>
+        <dd class="col-sm-10">@Model.CompraId</dd>
+    </dl>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary">Editar</a>
+    <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+</p>

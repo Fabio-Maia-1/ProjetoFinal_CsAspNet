@@ -1,0 +1,31 @@
+@model ProjetoFinal.Models.TipoDeBilhete
+
+@{
+    ViewData["Title"] = "Reativar Tipo de Bilhete";
+}
+
+<h1>Reativar Tipo de Bilhete</h1>
+<br />
+
+<h3>Pretende marcar este tipo de bilhete como ativo?</h3>
+<div>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Tipo</dt>
+        <dd class="col-sm-10">@Model.Tipo</dd>
+
+        <dt class="col-sm-2">Preço</dt>
+        <dd class="col-sm-10">@Model.Preco.ToString("C")</dd>
+
+        <dt class="col-sm-2">Ativo</dt>
+        <dd class="col-sm-10">@(Model.Ativo ? "Sim" : "Não")</dd>
+    </dl>
+    <hr />
+</div>
+<br />
+
+<form asp-action="Ativar" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-primary">Confirmar</button><br /><br />
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

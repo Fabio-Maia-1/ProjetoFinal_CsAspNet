@@ -40,20 +40,27 @@
 <div>
     @if (Model.Sessoes != null && Model.Sessoes.Any())
     {
-        var sessoesOrdenadas = Model.Sessoes.OrderBy(s => s.DataHora).ToList();
+        var sessoesOrdenadas = Model.Sessoes.OrderBy(s => s.DataHora).Where(s => s.Estado == EstadosSessao.Agendada).ToList();
 
-        <ul class="list-group mt-3">
-            @foreach (var sessao in sessoesOrdenadas)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <div>
-                        <strong>@sessao.DataHora.ToString("dd/MM/yyyy HH:mm")</strong><br />
-                    </div>
+        if (sessoesOrdenadas != null && sessoesOrdenadas.Any())
+        {
+            <ul class="list-group mt-3">
+                @foreach (var sessao in sessoesOrdenadas)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div>
+                            <strong>@sessao.DataHora.ToString("dd/MM/yyyy HH:mm")</strong><br />
+                        </div>
 
-                    <a asp-action="Comprar" asp-controller="Sessaos" asp-route-id="@sessao.Id" class="btn-comprar" style="width:stretch">Ver Sessão</a>
-                </li>
-            }
-        </ul>
+                        <a asp-action="Comprar" asp-controller="Sessaos" asp-route-id="@sessao.Id" class="btn-comprar" style="width:stretch">Ver Sessão</a>
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            <p>Não existem sessões agendadas disponíveis para este filme.</p>
+        }
     }
     else
     {

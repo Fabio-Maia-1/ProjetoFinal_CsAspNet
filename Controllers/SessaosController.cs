@@ -33,7 +33,7 @@ namespace ProjetoFinal.Controllers
                 {
                     if (estado.Value == 0) // Agendada
                     {
-                        sessoes = sessoes.Where(s => s.Estado == EstadosSessao.Agendada);
+                        sessoes = sessoes.Where(s => s.Estado == EstadosSessao.Agendada || s.Estado == EstadosSessao.EmPreparacao);
                     }
                     else if (estado.Value == 1) // Concluida
                     {
@@ -53,13 +53,24 @@ namespace ProjetoFinal.Controllers
 
         public async Task<IActionResult> Comprar(int? id)
         {
-            if (id == null) return NotFound();
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo == true).FirstOrDefault();
 
-            var sessao = await _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).FirstOrDefaultAsync(m => m.Id == id);
+            if (user != null)
+            {
+                if (id == null) return NotFound();
 
-            if (sessao == null) return NotFound();
+                var sessao = await _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).FirstOrDefaultAsync(m => m.Id == id);
 
-            return View(sessao);
+                if (sessao == null) return NotFound();
+
+                ViewBag.SerAdmin = false;
+                if (HttpContext.Session.GetString("TIPO") == "admin")
+                {
+                    ViewBag.SerAdmin = true;
+                }
+                return View(sessao);
+            }
+            return RedirectToAction("Index", "Login");
         }
 
 
@@ -126,7 +137,7 @@ namespace ProjetoFinal.Controllers
                 DateTime fimNovaSessao = inicioNovaSessao.AddMinutes(filme.Duracao + 60);
 
                 // Procurar sessões para a mesma sala à mesma hora
-                bool temConflito = await _context.Sessoes.Where(s => s.SalaId == sessao.SalaId)
+                bool temConflito = await _context.Sessoes.Where(s => s.SalaId == sessao.SalaId && s.Estado != EstadosSessao.Cancelada)
                     .AnyAsync(s => inicioNovaSessao < s.DataHora.AddMinutes(filme.Duracao + 60) && fimNovaSessao > s.DataHora);
 
                 if (temConflito)
@@ -197,7 +208,7 @@ namespace ProjetoFinal.Controllers
                 DateTime fimNovaSessao = inicioNovaSessao.AddMinutes(filme.Duracao + 60);
 
                 // Verificar sobreposição excluindo a sessão atual (s.Id != sessao.Id)
-                bool temConflito = await _context.Sessoes.Where(s => s.SalaId == sessao.SalaId && s.Id != sessao.Id)
+                bool temConflito = await _context.Sessoes.Where(s => s.SalaId == sessao.SalaId && s.Estado != EstadosSessao.Cancelada)
                     .AnyAsync(s => inicioNovaSessao < s.DataHora.AddMinutes(filme.Duracao + 60) && fimNovaSessao > s.DataHora);
 
                 if (temConflito)
@@ -270,6 +281,50 @@ namespace ProjetoFinal.Controllers
                 sessao.Estado = EstadosSessao.Cancelada; // Marca a sessão como cancelada em vez de removê-la
                 _context.Update(sessao);
                 //_context.Sessoes.Remove(sessao);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        // ------------ Disponibilizar
+        public async Task<IActionResult> Disponibilizar(int? id)
+        {
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null && HttpContext.Session.GetString("TIPO") == "admin")
+            {
+                if (id == null) return NotFound();
+
+                var sessao = await _context.Sessoes
+                    .Include(s => s.Filme)
+                    .Include(s => s.Sala)
+                    .FirstOrDefaultAsync(m => m.Id == id);
+
+                if (sessao == null) return NotFound();
+
+                return View(sessao);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+        [HttpPost, ActionName("Disponibilizar")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DisponibilizarConfirmed(int id)
+        {
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user == null || HttpContext.Session.GetString("TIPO") != "admin")
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            var sessao = await _context.Sessoes.FindAsync(id);
+            if (sessao != null)
+            {
+                sessao.Estado = EstadosSessao.Agendada;
+                _context.Update(sessao);
                 await _context.SaveChangesAsync();
             }
             return RedirectToAction(nameof(Index));

@@ -1,0 +1,38 @@
+@model ProjetoFinal.Models.Utilizador
+
+@{
+    ViewData["Title"] = "Desativar";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+<style>
+    body {
+        font-family: Arial, Helvetica, sans-serif;
+        background: #fafafa;
+        color: #333333;
+    }
+</style>
+
+
+<div class="login-container">
+
+    <h3>Quer desativar esta conta permanentemente?</h3>
+
+    <div>
+        <hr /><br />
+        <dl class="row">
+            <dt class="col-sm-2">Nome:</dt>
+            <dd class="col-sm-10">@Model.Nome</dd>
+
+            <dt class="col-sm-2">Email:</dt>
+            <dd class="col-sm-10">@Model.Email</dd>
+        </dl>
+
+        <form asp-action="Desativar">
+            <input type="hidden" asp-for="Id" />
+            <input type="submit" value="Desativar" class="btn btn-danger" /><br /><br />
+            <a asp-action="Details" class="btn btn-secondary">Voltar ao Perfil</a>
+        </form>
+    </div>
+</div>

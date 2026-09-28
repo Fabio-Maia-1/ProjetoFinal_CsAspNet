@@ -27,6 +27,6 @@
 <br />
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary @(Model.Estado == EstadosSessao.Concluida ? "disabled" : "")">Editar</a><br /><br />
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary @(Model.Estado != EstadosSessao.EmPreparacao ? "disabled" : "")">Editar</a><br /><br />
     <a asp-action="Index" class="btn btn-secondary">Voltar</a>
 </div>
