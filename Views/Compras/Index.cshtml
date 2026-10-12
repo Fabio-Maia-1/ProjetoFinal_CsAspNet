@@ -1,0 +1,36 @@
+@model IEnumerable<ProjetoFinal.Models.Compra>
+
+@{
+    ViewData["Title"] = "Compras";
+}
+
+<h1>Lista de Compras</h1>
+<br />
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Adicionar Nova Compra</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Data da Compra</th>
+            <th>Cliente</th>
+            <th>Vêr Detalhes</th>
+            <th>Apagar</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Id</td>
+            <td>@item.DataCompra</td>
+            <td>@(item.Cliente != null ? item.Cliente.Nome : "-")</td>
+            <td><a asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Detalhes</a></td>
+            <td><a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Apagar</a></td>
+        </tr>
+    }
+    </tbody>
+</table>

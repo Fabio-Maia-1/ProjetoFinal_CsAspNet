@@ -51,6 +51,7 @@ namespace ProjetoFinal.Controllers
         }
 
 
+        [HttpGet]
         public async Task<IActionResult> Comprar(int? id)
         {
             var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo == true).FirstOrDefault();
@@ -59,7 +60,7 @@ namespace ProjetoFinal.Controllers
             {
                 if (id == null) return NotFound();
 
-                var sessao = await _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).FirstOrDefaultAsync(m => m.Id == id);
+                var sessao = await _context.Sessoes.Include(s => s.Filme).Include(s => s.Sala).FirstOrDefaultAsync(s => s.Id == id);
 
                 if (sessao == null) return NotFound();
 
@@ -68,11 +69,34 @@ namespace ProjetoFinal.Controllers
                 {
                     ViewBag.SerAdmin = true;
                 }
+
+                // Passar tipos de bilhete ativos
+                ViewBag.TiposBilhetes = await _context.TiposDeBilhetes
+                    .Where(t => t.Ativo)
+                    .ToListAsync();
+
+                // Passar ids dos lugares já ocupados da sessão
+                ViewBag.LugaresOcupados = await _context.Bilhetes
+                    .Where(b => b.SessaoId == id && b.Estado != EstadosBilhete.Reembolsado)
+                    .Select(b => b.LugarId)
+                    .ToListAsync();
+
                 return View(sessao);
             }
             return RedirectToAction("Index", "Login");
         }
 
+        [HttpPost]
+        public async Task<IActionResult> ConfirmarCompra(string lugaresSelecionados, int sessaoId, int tipoBilheteId)
+        {
+            // Redireciona para o método "ReverCompra" de um "CompraController" diferente
+            return RedirectToAction("ConfirmarCompra", "Compras", new
+            {
+                sessaoId = sessaoId,
+                tipoBilheteId = tipoBilheteId,
+                lugaresSelecionados = lugaresSelecionados
+            });
+        }
 
 
         // GET: Sessaos/Details/5

@@ -5,79 +5,181 @@
 }
 <br />
 
-<div class="row">
-    <div class="col-md-4">
-        <h4 style="font-weight:bold">@Model.Filme?.Titulo</h4>
-        <hr />
-        <dl class="row">
-            <dt class="col-sm-5">Data e Hora</dt>
-            <dd class="col-sm-7">@Model.DataHora.ToString("g")</dd>
+<form method="post" asp-action="ConfirmarCompra">
 
-            <dt class="col-sm-5">Sala</dt>
-            <dd class="col-sm-7">@Model.Sala?.Nome</dd>
-        </dl>
-        <div class="col-sm-11 text-center align-content-center">
-            <img src="@Model.Filme?.PosterPath" alt="@Model.Filme?.Titulo" class="img-fluid rounded shadow" style="max-height: 300px;" />
+    <input type="hidden" id="lugaresSelecionados" name="LugaresSelecionados" />
+    <input type="hidden" id="sessaoId" name="sessaoId" value="@Model.Id" />
+
+    <div class="row">
+        <div class="col-md-4">
+            <h4 style="font-weight:bold">@Model.Filme?.Titulo</h4>
+            <hr />
+            <dl class="row">
+                <dt class="col-sm-5">Data e Hora</dt>
+                <dd class="col-sm-7">@Model.DataHora.ToString("g")</dd>
+
+                <dt class="col-sm-5">Sala</dt>
+                <dd class="col-sm-7">@Model.Sala?.Nome</dd>
+            </dl>
+            <div class="col-sm-11 text-center align-content-center">
+                <img src="@Model.Filme?.PosterPath" alt="@Model.Filme?.Titulo" class="img-fluid rounded shadow" style="max-height: 300px;" />
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-8">
-        <h4 style="font-weight:bold;text-align:center">Selecione os Seus Lugares</h4>
-        <hr />
+        <div class="col-md-8">
+            <h4 style="font-weight:bold;text-align:center">Selecione os Seus Lugares</h4>
+            <hr />
 
-        <div class="card p-3 bg-light align-content-center" style="box-sizing: border-box;">
-            <div class="seating-wrapper">
-                <div class="seating py-2">
-                    @for (int fila = 1; fila <= Model.Sala?.NumeroFilas; fila++)
-                    {
-                        char letraFila = (char)('A' + fila - 1);
-                        <div class="seat-row">
-                            <span class="fw-bold text-muted me-2" style="width: 15px;">@letraFila</span>
+            <div class="card p-3 bg-light align-content-center" style="box-sizing: border-box;">
+                <div class="seating-wrapper">
+                    <div class="seating py-2">
+                        @for (int fila = 1; fila <= Model.Sala?.NumeroFilas; fila++)
+                        {
+                            char letraFila = (char)('A' + (fila - 1));
+                            <div class="seat-row">
+                                <span class="fw-bold text-muted me-2" style="width: 15px;">@letraFila</span>
 
-                            <div class="seats">
-                                @for (int lugar = 1; lugar <= Model.Sala?.LugaresPorFila; lugar++)
-                                {
-                                    // Define se adiciona um corredor. Pode haver 1 ou 2 corredores dependendo do tamanho da sala
-                                    if (Model.Sala?.LugaresPorFila % 3 == 0 && Model.Sala?.LugaresPorFila > 17)
+                                <div class="seats">
+                                    @for (int lugar = 1; lugar <= Model.Sala?.LugaresPorFila; lugar++)
                                     {
-                                        bool tem2Corredores = (lugar == Model.Sala?.LugaresPorFila / 3 || lugar == Model.Sala?.LugaresPorFila / 3 + Model.Sala?.LugaresPorFila / 3);
+                                        // Define se adiciona um corredor. Pode haver 1 ou 2 corredores dependendo do tamanho da sala
+                                        if (Model.Sala?.LugaresPorFila % 3 == 0 && Model.Sala?.LugaresPorFila > 17)
+                                        {
+                                            bool tem2Corredores = (lugar == Model.Sala?.LugaresPorFila / 3 || lugar == Model.Sala?.LugaresPorFila / 3 + Model.Sala?.LugaresPorFila / 3);
 
-                                        <div class="seat @(tem2Corredores ? "me-4" : "")" style="width: 30px; height: 30px;"
-                                            title="Fila @letraFila, Lugar @lugar"> @lugar
-                                        </div>
-                                    }
-                                    else if (Model.Sala?.LugaresPorFila % 2 == 0 && Model.Sala?.LugaresPorFila > 9)
-                                    {
-                                        bool temCorredor = (lugar == Model.Sala?.LugaresPorFila / 2);
+                                            <button type="button"
+                                                    class="seat @(tem2Corredores ? "me-4" : "")"
+                                                    style="width: 30px; height: 30px; cursor: pointer"
+                                                    title="Fila @letraFila, Lugar @lugar"
+                                                    data-fila="@letraFila"
+                                                    data-lugar="@lugar"
+                                                    onclick="toggleSeat(this)">
+                                                @lugar
+                                            </button>
+                                        }
+                                        else if (Model.Sala?.LugaresPorFila % 2 == 0 && Model.Sala?.LugaresPorFila > 9)
+                                        {
+                                            bool temCorredor = (lugar == Model.Sala?.LugaresPorFila / 2);
 
-                                        <div class="seat @(temCorredor ? "me-4" : "")" style="width: 30px; height: 30px;"
-                                             title="Fila @letraFila, Lugar @lugar">
-                                            @lugar
-                                        </div>
+                                            <button type="button"
+                                                    class="seat @(temCorredor ? "me-4" : "")"
+                                                    style="width: 30px; height: 30px; cursor: pointer"
+                                                    title="Fila @letraFila, Lugar @lugar"
+                                                    data-fila="@letraFila"
+                                                    data-lugar="@lugar"
+                                                    onclick="toggleSeat(this)">
+                                                @lugar
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button"
+                                                    class="seat"
+                                                    style="width: 30px; height: 30px; cursor: pointer"
+                                                    title="Fila @letraFila, Lugar @lugar"
+                                                    data-fila="@letraFila"
+                                                    data-lugar="@lugar"
+                                                    onclick="toggleSeat(this)">
+                                                @lugar
+                                            </button>
+                                        }
                                     }
-                                    else
-                                    {
-                                        <div class="seat" style="width: 30px; height: 30px;" title="Fila @letraFila, Lugar @lugar"> @lugar </div>
-                                    }
-                                }
+                                </div>
                             </div>
-                        </div>
-                    }
+                        }
+                    </div>
                 </div>
             </div>
+            <br />
         </div>
         <br />
     </div>
-
     <br />
 
-</div>
-<br />
+    <hr />
+    <div class="row">
 
-<div>
-    @if (ViewBag.SerAdmin == false)
-    {
-        <a asp-action="" asp-controller="" asp-route-id="@Model.Id" class="btn btn-primary @(Model.Estado != EstadosSessao.Agendada ? "disabled" : "")">Comprar</a><br /><br />
+        <div class="col-md-7">
+            <label><strong>Tipo de Bilhete:</strong></label>
+            <select name="tipoBilhete" id="tipoBilhete" class="form-control" onchange="atualizarTotal()" style="width: 80%;">
+                @foreach (var tipo in ViewBag.TiposBilhetes)
+                {
+                    <option value="@tipo.Id" data-preco="@tipo.Preco">@tipo.Tipo (@tipo.Preco.ToString("C"))</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-5">
+            <p><strong>Nº de Lugares Selecionados: </strong><span style="margin-left: 10px;" id="numLugares">0</span></p>
+            <p><strong>Valor Total a Pagar: </strong><span style="margin-left: 10px;" id="valorTotal">0,00€</span></p>
+        </div>
+        
+    </div>
+
+    <div>
+    <br />
+        @if (ViewBag.SerAdmin == false)
+        {
+            <button type="submit" id="btnConfirmar" class="btn btn-primary mt-3" disabled>Confirmar Compra</button><br /><br /> 
+        }
+        <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@Model.Filme?.Id" class="btn btn-secondary">Voltar</a>
+    </div>
+
+</form>
+
+
+<script>
+    // Array para guardar os lugares selecionados (ex: ["A1", "A2"])
+    let selectedSeats = [];
+
+    function toggleSeat(button) {
+        const fila = button.getAttribute('data-fila');
+        const lugar = button.getAttribute('data-lugar');
+        const seatIdentifier = `${fila}${lugar}`;
+
+        if (button.classList.contains('selected')) {
+            // Se já estava selecionado, remove a seleção
+            button.classList.remove('selected');
+            selectedSeats = selectedSeats.filter(s => s !== seatIdentifier);
+        } else {
+            // Seleciona o lugar
+            // Limitar ao número de bilhetes escolhidos pelo cliente:
+            if (selectedSeats.length >= 12) {
+                alert('Já selecionou o número máximo de bilhetes para esta compra.');
+                return;
+            }
+            button.classList.add('selected');
+            selectedSeats.push(seatIdentifier);
+        }
+
+        // Atualiza o valor do input oculto para enviar para o Controller em C#
+        document.getElementById('lugaresSelecionados').value = JSON.stringify(selectedSeats);
+        document.getElementById('numLugares').textContent = selectedSeats.length;
+
+        // Calcular preço total
+        atualizarTotal()
     }
-    <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@Model.Filme?.Id" class="btn btn-secondary">Voltar</a>
-</div>
+
+    function atualizarTotal() {
+        const selecao = document.getElementById('tipoBilhete');
+        const selectedOption = selecao.options[selecao.selectedIndex];
+
+        const precoStr = selectedOption.getAttribute('data-preco').replace(',', '.');
+        const preco = parseFloat(precoStr);
+        const total = selectedSeats.length * preco;
+
+        document.getElementById('valorTotal').textContent = total.toFixed(2).replace('.', ',') + ' €';
+    
+        // Gere o estado do botão de confirmar compra
+        const btnConfirmar = document.getElementById('btnConfirmar');
+        if (btnConfirmar != null) 
+        {
+            // O botão fica ativo com pelo menos 1 lugar selecionado
+            if (selectedSeats.length > 0) {
+                btnConfirmar.disabled = false;
+            } else {
+                btnConfirmar.disabled = true;
+            }
+        }
+    }
+</script>

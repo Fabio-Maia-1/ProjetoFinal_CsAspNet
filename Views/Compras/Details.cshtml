@@ -1,0 +1,57 @@
+@model ProjetoFinal.Models.Compra
+
+@{
+    ViewData["Title"] = "Detalhes da Compra";
+}
+
+<h1>Detalhes da Compra</h1>
+<br />
+
+<div>
+    <h4>Compra</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">Id</dt>
+        <dd class="col-sm-10">@Model.Id</dd>
+
+        <dt class="col-sm-2">Data da Compra</dt>
+        <dd class="col-sm-10">@Model.DataCompra</dd>
+
+        <dt class="col-sm-2">Cliente</dt>
+        <dd class="col-sm-10">@(Model.Cliente != null ? Model.Cliente.Nome : "-")</dd>
+    </dl>
+
+    <h4>Bilhetes</h4>
+    @if (Model.Bilhetes != null && Model.Bilhetes.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Filme</th>
+                    <th>Sessão</th>
+                    <th>Lugar</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var b in Model.Bilhetes)
+            {
+                <tr>
+                    <td>@b.Id</td>
+                    <td>@(b.Sessao?.Filme?.Titulo ?? "-")</td>
+                    <td>@(b.Sessao?.DataHora.ToString() ?? "-")</td>
+                    <td>@(b.Lugar != null ? b.Lugar.Fila + b.Lugar.Numero : "-")</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>Sem bilhetes associados.</p>
+    }
+
+    <p>
+        <a asp-action="Index" class="btn btn-secondary">Voltar à Lista</a>
+    </p>
+</div>

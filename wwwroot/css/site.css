@@ -265,20 +265,19 @@ dd {
 /* wrapper que controla o scroll horizontal */
 .seating-wrapper {
     overflow-x: auto;
-    overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
     padding: 8px;
+    width: 100%;
 }
 
-/* container das filas: permite largura natural e evita que o flex encolha conteúdo */
+/* container das filas */
 .seating {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: center; /* Centra a sala no cartão se houver espaço livre */
     gap: 8px;
     width: 100%;
-    align-items: flex-start; /* alinhar à esquerda para evitar centrar o bloco inteiro */
-    min-width: max-content; /* garante que o conteúdo define a largura necessária */
+    min-width: max-content; /* largura adapta-se ao tamanho da sala */
 }
 
 /* cada linha de lugares */
@@ -307,3 +306,21 @@ dd {
     background: #fff;
     border-radius: 4px;
 }
+
+    /* Estado do lugar quando é selecionado pelo utilizador */
+    .seat.selected {
+        background-color: #1a75ff;
+        color: white;
+        border-color: #0052cc;
+        font-weight: bold;
+    }
+
+    /* Efeito hover para mostrar que é clicável */
+    .seat:hover {
+        border-color: #1a75ff;
+        background-color: #f0f0f0;
+    }
+
+    .seat.selected:hover {
+        background-color: #0052cc;
+    }

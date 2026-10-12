@@ -43,6 +43,32 @@ namespace ProjetoFinal.Controllers
             return RedirectToAction("Index", "Login");
         }
 
+
+        // Ver todos os bilhetes do cliente autenticado
+        // GET: Bilhetes/MeusBilhetes
+        public async Task<IActionResult> MeusBilhetes()
+        {
+            var user = _context.Utilizadors.Where(u => u.Email == HttpContext.Session.GetString("EMAIL") && u.Ativo).FirstOrDefault();
+
+            if (user != null && HttpContext.Session.GetString("TIPO") == "cliente")
+            {
+                var bilhetes = await _context.Bilhetes
+                    .Include(b => b.Sessao).ThenInclude(s => s.Filme)
+                    .Include(b => b.Lugar)
+                    .Include(b => b.Compra)
+                    .Include(b => b.TipoDeBilhete)
+                    .Where(b => b.Compra.ClienteId == user.Id)
+                    .OrderByDescending(b => b.Compra.DataCompra)
+                    .ToListAsync();
+
+                return View(bilhetes);
+            }
+
+            return RedirectToAction("Index", "Login");
+        }
+
+
+
         // GET: Bilhetes/Details/5
         public async Task<IActionResult> Details(int? id)
         {
