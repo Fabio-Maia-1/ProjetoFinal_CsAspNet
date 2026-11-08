@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ProjetoFinal.Models
 {
@@ -23,6 +24,7 @@ namespace ProjetoFinal.Models
 
         public Compra? Compra { get; set; }
 
+        [ForeignKey("TipoId")]
         public TipoDeBilhete? TipoDeBilhete { get; set; }
     }
 

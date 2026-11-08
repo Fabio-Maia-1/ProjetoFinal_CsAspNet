@@ -2,12 +2,73 @@
 
 @{
     ViewData["Title"] = "Confirmar Compra";
-
+    var tipoBilhete = ViewBag.TipoBilhete as ProjetoFinal.Models.TipoDeBilhete; // Ajusta o namespace se necessário
+    var lugares = ViewBag.Lugares as IEnumerable<dynamic>;
+    var precoTotal = (decimal)ViewBag.PrecoTotal;
+    var lugaresJson = ViewBag.LugaresSelecionadosJson as string;
 }
 
-<p>@ViewBag.xxx</p>
+<div class="container my-4">
+    <h1 class="mb-4">Confirmar Reserva de Bilhetes</h1>
 
-@foreach (string item in ViewBag.xxx)
-{
-    <p>@item</p>
+    <div class="row">
+        <!-- Detalhes do Filme e Sessão -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Detalhes da Sessão</h5>
+                </div>
+                <div class="card-body">
+                    <p><strong>Filme:</strong> @Model.Filme?.Titulo</p>
+                    <p><strong>Sala:</strong> @Model.Sala?.Nome</p>
+                    <p><strong>Data e Hora:</strong> @Model.DataHora.ToString("dd/MM/yyyy HH:mm")</p>
+                    <p><strong>Tipo de Bilhete:</strong> @tipoBilhete?.Tipo (@tipoBilhete?.Preco.ToString("C"))</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumo dos Lugares e Preços -->
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Lugares Selecionados</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group mb-3">
+                        @if (lugares != null)
+                        {
+                            foreach (var l in lugares)
+                            {
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    Fila @l.Fila, Lugar @l.Numero
+                                    <span class="badge bg-secondary">@tipoBilhete?.Preco.ToString("C")</span>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total a Pagar:</span>
+                        <span class="text-success">@precoTotal.ToString("C")</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botões de Ação -->
+    <form asp-action="EfetuarCompra" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="sessaoId" value="@Model.Id" />
+        <input type="hidden" name="tipoBilheteId" value="@tipoBilhete?.Id" />
+        <input type="hidden" name="lugaresSelecionados" value="@lugaresJson" />
+
+        <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success btn-lg">Confirmar e Comprar</button>
+            <a asp-controller="Filmes" asp-action="Index" class="btn btn-secondary btn-lg">Cancelar</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }

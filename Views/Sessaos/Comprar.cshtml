@@ -3,11 +3,24 @@
 @{
     ViewData["Title"] = "Detalhes da Sessão";
 }
+
+@if (TempData["Erro"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @TempData["Erro"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@{
+    var lugaresOcupados = ViewBag.LugaresOcupados as List<string> ?? new List<string>();
+}
+
 <br />
 
-<form method="post" asp-action="ConfirmarCompra">
+<form method="post" asp-controller="Compras" asp-action="ConfirmarCompra">
 
-    <input type="hidden" id="lugaresSelecionados" name="LugaresSelecionados" />
+    <input type="hidden" id="lugaresSelecionados" name="lugaresSelecionados" />
     <input type="hidden" id="sessaoId" name="sessaoId" value="@Model.Id" />
 
     <div class="row">
@@ -42,6 +55,9 @@
                                 <div class="seats">
                                     @for (int lugar = 1; lugar <= Model.Sala?.LugaresPorFila; lugar++)
                                     {
+                                        string lugarAtual = $"{letraFila}{lugar}";
+                                        bool estaOcupado = lugaresOcupados.Contains(lugarAtual);
+
                                         // Define se adiciona um corredor. Pode haver 1 ou 2 corredores dependendo do tamanho da sala
                                         if (Model.Sala?.LugaresPorFila % 3 == 0 && Model.Sala?.LugaresPorFila > 17)
                                         {
@@ -53,6 +69,7 @@
                                                     title="Fila @letraFila, Lugar @lugar"
                                                     data-fila="@letraFila"
                                                     data-lugar="@lugar"
+                                                @(estaOcupado ? "disabled" : "")
                                                     onclick="toggleSeat(this)">
                                                 @lugar
                                             </button>
@@ -67,6 +84,7 @@
                                                     title="Fila @letraFila, Lugar @lugar"
                                                     data-fila="@letraFila"
                                                     data-lugar="@lugar"
+                                                @(estaOcupado ? "disabled" : "")
                                                     onclick="toggleSeat(this)">
                                                 @lugar
                                             </button>
@@ -79,6 +97,7 @@
                                                     title="Fila @letraFila, Lugar @lugar"
                                                     data-fila="@letraFila"
                                                     data-lugar="@lugar"
+                                                @(estaOcupado ? "disabled" : "")
                                                     onclick="toggleSeat(this)">
                                                 @lugar
                                             </button>
@@ -101,7 +120,7 @@
 
         <div class="col-md-7">
             <label><strong>Tipo de Bilhete:</strong></label>
-            <select name="tipoBilhete" id="tipoBilhete" class="form-control" onchange="atualizarTotal()" style="width: 80%;">
+            <select name="tipoBilheteId" id="tipoBilhete" class="form-control" onchange="atualizarTotal()" style="width: 80%;">
                 @foreach (var tipo in ViewBag.TiposBilhetes)
                 {
                     <option value="@tipo.Id" data-preco="@tipo.Preco">@tipo.Tipo (@tipo.Preco.ToString("C"))</option>
@@ -113,14 +132,14 @@
             <p><strong>Nº de Lugares Selecionados: </strong><span style="margin-left: 10px;" id="numLugares">0</span></p>
             <p><strong>Valor Total a Pagar: </strong><span style="margin-left: 10px;" id="valorTotal">0,00€</span></p>
         </div>
-        
+
     </div>
 
     <div>
-    <br />
+        <br />
         @if (ViewBag.SerAdmin == false)
         {
-            <button type="submit" id="btnConfirmar" class="btn btn-primary mt-3" disabled>Confirmar Compra</button><br /><br /> 
+            <button type="submit" id="btnConfirmar" class="btn btn-primary mt-3" disabled>Confirmar Compra</button><br /><br />
         }
         <a asp-action="Detalhes" asp-controller="Home" asp-route-id="@Model.Filme?.Id" class="btn btn-secondary">Voltar</a>
     </div>
@@ -169,11 +188,10 @@
         const total = selectedSeats.length * preco;
 
         document.getElementById('valorTotal').textContent = total.toFixed(2).replace('.', ',') + ' €';
-    
+
         // Gere o estado do botão de confirmar compra
         const btnConfirmar = document.getElementById('btnConfirmar');
-        if (btnConfirmar != null) 
-        {
+        if (btnConfirmar != null) {
             // O botão fica ativo com pelo menos 1 lugar selecionado
             if (selectedSeats.length > 0) {
                 btnConfirmar.disabled = false;

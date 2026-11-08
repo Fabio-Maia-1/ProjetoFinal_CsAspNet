@@ -75,29 +75,18 @@ namespace ProjetoFinal.Controllers
                     .Where(t => t.Ativo)
                     .ToListAsync();
 
-                // Passar ids dos lugares já ocupados da sessão
+                // Passar lista de strings com os lugares ocupados (ex: ["A1", "A2", "B5"])
                 ViewBag.LugaresOcupados = await _context.Bilhetes
                     .Where(b => b.SessaoId == id && b.Estado != EstadosBilhete.Reembolsado)
-                    .Select(b => b.LugarId)
+                    .Include(b => b.Lugar)
+                    .Select(b => $"{b.Lugar.Fila}{b.Lugar.Numero}")
                     .ToListAsync();
+
 
                 return View(sessao);
             }
             return RedirectToAction("Index", "Login");
         }
-
-        [HttpPost]
-        public async Task<IActionResult> ConfirmarCompra(string lugaresSelecionados, int sessaoId, int tipoBilheteId)
-        {
-            // Redireciona para o método "ReverCompra" de um "CompraController" diferente
-            return RedirectToAction("ConfirmarCompra", "Compras", new
-            {
-                sessaoId = sessaoId,
-                tipoBilheteId = tipoBilheteId,
-                lugaresSelecionados = lugaresSelecionados
-            });
-        }
-
 
         // GET: Sessaos/Details/5
         public async Task<IActionResult> Details(int? id)

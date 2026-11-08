@@ -25,9 +25,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Bilhetes" asp-action="Index">Bilhetes</a>
-                        </li>
 
                         @* Exibe o separador Admin apenas se o utilizador for admin *@
                         @if (Context.Session.GetString("TIPO") == "admin")
@@ -55,7 +52,7 @@
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a class="dropdown-item" asp-controller="Bilhetes" asp-action="Lista">Ver Compras</a>
+                                            <a class="dropdown-item" asp-controller="Compras" asp-action="ListaCompras">Ver Compras</a>
                                         </li>
                                         <li><hr class="dropdown-divider"></li>
                                     }
@@ -78,7 +75,7 @@
             </div>
         </nav>
     </header>
-    
+
     <main role="main" class="pb-3">
         <div class="container">
             @RenderBody()
